@@ -3,7 +3,7 @@
 <eagle version="9.3.0">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -1123,7 +1123,7 @@ einem neuen Namen ab.</description>
 <contactref element="IC4" pad="2"/>
 <contactref element="IC4" pad="2A"/>
 <contactref element="C1" pad="-"/>
-<polygon width="0.4064" layer="1" rank="2">
+<polygon width="0.4064" layer="1" thermals="no" rank="2">
 <vertex x="-1.119" y="37.897"/>
 <vertex x="71.881" y="37.897"/>
 <vertex x="71.881" y="-6.2"/>
