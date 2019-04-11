@@ -57,8 +57,8 @@ void loop(){
     
     myCommand=Serial.readStringUntil('\n');
     
-    Serial.print("Sending ");
-    Serial.println(myCommand);
+    //Serial.print("Sending ");
+    //Serial.println(myCommand);
     
     mySDI12.sendCommand(myCommand);
     delay(100);                     // wait a while for a response
