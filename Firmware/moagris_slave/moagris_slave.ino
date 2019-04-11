@@ -4,13 +4,16 @@
    -Avoided String type since it uses way too much flash
 */
 
-#define FIRMWAREVERSION "00.00.02"
+#define FIRMWAREVERSION "00.00.03"
 
 //recommended value is 20000UL and do heartbeat every 15000ms
 #define HEARTBEATINTERVAL 150543560UL //long heartbeat for development
 
 //defines the timeout this sensor waits for another sensors response
 #define SDIWAITTIMEOUT 1000UL
+
+//defines the timeout this sensor waits until the cmd finishes by '!'
+#define SDICMDTIMEOUT 1000UL
 
 #define SDICMDIDENTIFICATION 'I'
 #define SDICMDVERSION 'V'
@@ -67,10 +70,12 @@ static char *commandWritePtr;
 static char *commandReadPtr;
 static bool sdiWaitUntilFinish = false;
 static unsigned long sdiWaitTimeoutMillis = 0; //millis for timer to timeout waiting for other sensor to finish command
+static unsigned long sdiCmdErrorTimeoutMillis = 0; //millis for timer to timeout if sensor waits too long for an finished cmd ('!')
 static unsigned long hbPreviousMillis = millis(); //milliSeconds for heartbeat
 static unsigned long hbInterval = HEARTBEATINTERVAL; //Interval to declare heartbeat missing; save as variable to set higher via sdi //TODO do so
 static bool hbAvailable = true; //heartbeatflag
 static char sdiGroup = SDIGROUPDEFAULT;
+static byte sdiCntCharsReceived=0;
 
 
 //helper function for hex codes
@@ -110,6 +115,7 @@ void resetSdiBuffer() {
   commandWritePtr = commandReceived;
   commandReadPtr = commandReceived;
   slaveSDI12.clearBuffer();
+  sdiCntCharsReceived=0;
 }
 
 void setup() {
@@ -143,6 +149,10 @@ void loop() {
     resetSdiBuffer();
   }
 
+  if(sdiCntCharsReceived>0 && (millis()-sdiCmdErrorTimeoutMillis) >= SDICMDTIMEOUT){
+    resetSdiBuffer();
+  }
+
   int avail = slaveSDI12.available();
   if (avail < 0) {
     slaveSDI12.clearBuffer(); // Buffer is full; clear
@@ -155,6 +165,12 @@ void loop() {
         continue;
       }
 
+      //set timer to timeout if sensor waits too long for an finished cmd ('!')
+      if(sdiCntCharsReceived==0 ){
+        sdiCmdErrorTimeoutMillis=millis();  
+      }
+      sdiCntCharsReceived++;
+      
       //Serial.print("charReceived:"); Serial.println(charReceived);
       // Append command string with new character
       *commandWritePtr = charReceived; //TODO check too long command
