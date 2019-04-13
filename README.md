@@ -80,13 +80,16 @@ Optional board to be used as a SDI master. You can use any other module as a mas
 Provides an ~90° angle for the rods. 
 
 ## Node-RED
-You need the following plugin(s) to make the [flow configuration in flow.json](./Node-RED/flow.json) working:
+You need the following plugins to make the [flow configuration in flow.json](./Node-RED/flow.json) working:
 
+- [node-red-node-serialport](https://flows.nodered.org/node/node-red-node-serialport)
 - [node-red-contrib-simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue)
 
-The subflow handles incoming commands or arrays of commands by means of putting them into a queue, calculating the expected response, retry the command on false responses. It also adds "!\n" to each input so you only have to enter the pure command. The flow itself demonstrates the use of a heartbeat that beats every 10s and a setup routine that sets the heartbeat interval and the sensors' group. Additionally there is a timed injection which starts the leds at 8am and shuts them down at 5pm.
+The subflow handles incoming commands or arrays of commands by means of putting them into a queue, calculating the expected response and retrying the command 3 times on false responses. It also adds "!\n" to each input so you only have to enter the pure command. The flow itself demonstrates the use of a heartbeat that beats every 10s and a setup routine that sets the heartbeat interval and the sensors' group. Additionally there is a timed injection which starts the leds at 8am and shuts them down at 5pm. After the demo setup routine you may address all the leds at once by their group address but it is not advised since you won't get an answer and so the subflow can not check if the communication worked. If there's an error you may send an email.
 
 ![Node-RED MoAgriS base config](./Node-RED/demoAutomation.png "Node-RED MoAgriS base config")
+
+After importing the flow you need to configure the serial port by configuring the MoAgriS-Subflow (double click on the MoAgriS node -> Edit subflow template -> double click on the serial request node - it's the one after the queue).
 
 If you wish to have a dashboard like the one below the plugin [node-red-dashboard](https://flows.nodered.org/node/node-red-dashboard) helps you.
 
