@@ -16,7 +16,11 @@ That's it pretty much. You should be able to send commands to the individual mod
 
 
 ## Development
-Thanks to [Mattairtechs ArduinoCore-samd](https://github.com/mattairtech/ArduinoCore-samd) firmware development is quite easy. The setup is described [here](https://github.com/mattairtech/ArduinoCore-samd#installation) (two parts!). The flash size of the SAMD11 is quite small to fit in all the firmware but it is possible if you turn off as many functions as possible in the config.h (Windows: C:\Users\User\AppData\Local\Arduino15\packages\MattairTech_Arduino\hardware\samd\1.6.18-beta-b1\config.h). My config can be found in [Firmware/config.h](./Firmware/config.h). Additionally you should avoid costful code such as the String datatype. Right now the complete firmware for the slave takes up 10232 Bytes.
+Thanks to [Mattairtechs ArduinoCore-samd](https://github.com/mattairtech/ArduinoCore-samd) firmware development is quite easy. The setup is described [here](https://github.com/mattairtech/ArduinoCore-samd#installation) (two parts!). The flash size of the SAMD11 is quite small to fit in all the firmware but it is possible if you turn off as many functions as possible in the config.h (Windows: C:\Users\User\AppData\Local\Arduino15\packages\MattairTech_Arduino\hardware\samd\1.6.18-beta-b1\config.h). My config can be found in [Firmware/config.h](./Firmware/config.h). 
+
+You also need to install [Arduino-SDI-12](https://github.com/EnviroDIY/Arduino-SDI-12/releases/tag/v1.1.0) and add it to the Arduino IDE for the <SDI12.h> include. Please use v1.1.0 since newer ones do not seem to work with the SAMD11.
+
+Additionally you should avoid costful code such as the String datatype. Right now the complete firmware for the slave takes up 10232 Bytes.
 
 ## SDI Commands
 The SDI protocol consists of commands from the master and answers from the sensors in printable 7bit ACII characters. A command starts with an [address](#Addressing) followed by an instruction and an optional parameter. It is finished with an '!' and sent to the module(s). If the command is a heartbeat or a group instruction the module doesn't answer. If a certain module is addressed the answer will be given via the SDI bus starting with its address and an answer. That string is also printed to the serial if you connected the module via USB for debugging purposes.
@@ -75,12 +79,25 @@ Optional board to be used as a SDI master. You can use any other module as a mas
 ### Angle
 Provides an ~90° angle for the rods. 
 
+## Node-RED
+You need the following plugin(s) to make the [flow configuration in flow.json](./Node-RED/flow.json) working:
+
+- [node-red-contrib-simple-message-queue](https://flows.nodered.org/node/node-red-contrib-simple-message-queue)
+
+The subflow handles incoming commands or arrays of commands by means of putting them into a queue, calculating the expected response, retry the command on false responses. It also adds "!\n" to each input so you only have to enter the pure command. The flow itself demonstrates the use of a heartbeat that beats every 10s and a setup routine that sets the heartbeat interval and the sensors' group. Additionally there is a timed injection which starts the leds at 8am and shuts them down at 5pm.
+
+![Node-RED MoAgriS base config](./Node-RED/demoAutomation.png "Node-RED MoAgriS base config")
+
+If you wish to have a dashboard like the one below the plugin [node-red-dashboard](https://flows.nodered.org/node/node-red-dashboard) helps you.
+
+![Node-RED MoAgriS dashboard demo](./Node-RED/demoDashboard.png "Node-RED MoAgriS dashboard demo")
+
+
 ## Future
 More things could be added such as
 - Sensors: Currently a LED-Board is technically capable of driving sensors since all pins are routed outside:
 	- Watering could depend on the wetness of the soil
 	- Measure the water level of the pump tank to send an alert to refill
-- Create a node-red configuration
 - Find an alternative to Atmel Studio for installing the bootloader
 - Provide firmware binaries to avoid setting up Arduino IDE
 
