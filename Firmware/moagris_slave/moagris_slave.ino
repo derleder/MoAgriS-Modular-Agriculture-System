@@ -218,7 +218,8 @@ void loop() {
 
             byte finishOffset = 0;
             byte intensity = 0;
-            switch (*commandReadPtr++) { //if/elseif instead of switch would save 8 bytes
+            char sdiCommand=*commandReadPtr++;
+            switch (sdiCommand) { //if/elseif instead of switch would save 8 bytes
               case SDICMDIDENTIFICATION: //xored serial number of samd11; blank responseContent
                 finishOffset = 0;
                 break;
@@ -269,7 +270,7 @@ void loop() {
             }
 
             //sending via sdi if it's not a group command
-            if (!isGroupCmd) {
+            if (!isGroupCmd || sdiCommand==SDICMDIDENTIFICATION) {
               finishResponse((uResponse.sdiResponse.responseContent + finishOffset));
               slaveSDI12.sendResponse(uResponse.c);
             } else {
