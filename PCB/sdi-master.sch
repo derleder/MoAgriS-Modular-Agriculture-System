@@ -7,7 +7,7 @@
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="1" unitdist="mm" unit="mm" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -8937,6 +8937,11 @@ CONN_03
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J5" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="CONN_03" device="SCREW-NS" package3d_urn="urn:adsk.eagle:package:38088/1"/>
 <part name="J3" library="SparkFun-Connectors" deviceset="CONN_04" device="PTH"/>
+<part name="R21" library="SparkFun-Resistors" deviceset="RESISTOR" device="1206" value="510R"/>
+<part name="R22" library="SparkFun-Resistors" deviceset="RESISTOR" device="1206" value="510R"/>
+<part name="C20" library="microbuilder" deviceset="CAP_CERAMIC" device="0603" value="3.3nF"/>
+<part name="R20" library="SparkFun-Resistors" deviceset="RESISTOR" device="1206" value="200k"/>
+<part name="U$11" library="microbuilder" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9076,6 +9081,25 @@ Setup for 330mA per LED.</text>
 <attribute name="VALUE" x="-66.04" y="56.134" size="1.778" layer="96" font="vector"/>
 <attribute name="NAME" x="-66.04" y="71.628" size="1.778" layer="95" font="vector"/>
 </instance>
+<instance part="R21" gate="G$1" x="-71.12" y="27.94" smashed="yes">
+<attribute name="NAME" x="-74.39" y="31.4386" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-74.58" y="29.448" size="1.778" layer="96"/>
+</instance>
+<instance part="R22" gate="G$1" x="-86.36" y="27.94" smashed="yes">
+<attribute name="NAME" x="-89" y="32" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-88.9" y="29.48" size="1.778" layer="96"/>
+</instance>
+<instance part="C20" gate="G$1" x="-76.2" y="22.86" smashed="yes">
+<attribute name="NAME" x="-73.66" y="24.4" size="1.27" layer="95" font="vector"/>
+<attribute name="VALUE" x="-73.66" y="22.86" size="1.27" layer="96" font="vector"/>
+</instance>
+<instance part="R20" gate="G$1" x="-81.28" y="22.86" smashed="yes" rot="R90">
+<attribute name="NAME" x="-84.55" y="22.3614" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="-82.28" y="19.812" size="1.778" layer="96" rot="R180"/>
+</instance>
+<instance part="U$11" gate="G$1" x="-78.74" y="15.24" smashed="yes">
+<attribute name="VALUE" x="-80.264" y="12.7" size="1.27" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -9153,6 +9177,15 @@ Setup for 330mA per LED.</text>
 <segment>
 <pinref part="J5" gate="J$1" pin="1"/>
 <pinref part="GND1" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="R20" gate="G$1" pin="1"/>
+<pinref part="U$11" gate="G$1" pin="GND"/>
+<wire x1="-81.28" y1="17.78" x2="-78.74" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="C20" gate="G$1" pin="P$2"/>
+<wire x1="-78.74" y1="17.78" x2="-76.2" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="-76.2" y1="17.78" x2="-76.2" y2="20.32" width="0.1524" layer="91"/>
+<junction x="-78.74" y="17.78"/>
 </segment>
 </net>
 <net name="PWM" class="0">
@@ -9274,6 +9307,10 @@ Setup for 330mA per LED.</text>
 <segment>
 <pinref part="U1" gate="G$1" pin="PA15/AIN7"/>
 <pinref part="R1" gate="G$1" pin="2"/>
+<wire x1="-40.64" y1="58.42" x2="-40.64" y2="27.94" width="0.1524" layer="91"/>
+<junction x="-40.64" y="58.42"/>
+<wire x1="-40.64" y1="27.94" x2="-66.04" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="R21" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="BUS" class="0">
@@ -9295,6 +9332,11 @@ Setup for 330mA per LED.</text>
 <segment>
 <pinref part="J5" gate="J$1" pin="2"/>
 <wire x1="33.02" y1="10.16" x2="20.32" y2="10.16" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="R22" gate="G$1" pin="1"/>
+<wire x1="-91.44" y1="27.94" x2="-96.52" y2="27.94" width="0.1524" layer="91"/>
+<label x="-96.52" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -9352,6 +9394,17 @@ Setup for 330mA per LED.</text>
 <pinref part="U1" gate="G$1" pin="PA14/AIN6"/>
 <pinref part="J3" gate="J1" pin="1"/>
 <wire x1="-40.64" y1="60.96" x2="-55.88" y2="60.96" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$8" class="0">
+<segment>
+<pinref part="R21" gate="G$1" pin="1"/>
+<pinref part="R22" gate="G$1" pin="2"/>
+<wire x1="-76.2" y1="27.94" x2="-81.28" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="C20" gate="G$1" pin="P$1"/>
+<junction x="-76.2" y="27.94"/>
+<pinref part="R20" gate="G$1" pin="2"/>
+<junction x="-81.28" y="27.94"/>
 </segment>
 </net>
 </nets>
