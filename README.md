@@ -70,8 +70,11 @@ Provides light by 3 full spectrum LEDs which intensity can be controlled via SDI
 ### Pump-Module 
 Provides water by a pump by switching it on/off via SDI. 
 
-### Fan-Module
-Provides wind by a fan that can be controlled via PWM over SDI. 
+### Fan-Module_40mm
+Provides wind by a 40mm fan that can be controlled via PWM over SDI.
+
+### Fan-Module_80mm
+Provides wind by a 80mm fan that can be controlled via PWM over SDI. This is it. That's the limit of the free Eagle version. The fuseholders sit so tightly to the fan that you might need to chop off their legs.
 
 ### SDI-Master
 Optional board to be used as a SDI master. You can use any other module as a master but this one is optimized for the job. It is as slim as the LED PCB and has two possible power connectors - only use one. The screw connector also has a third terminal to also chain the BUS signal.
@@ -98,7 +101,7 @@ If you wish to have a dashboard like the one below the plugin [node-red-dashboar
 
 ## Future
 More things could be added such as
-- Sensors: Currently a LED-Board is technically capable of driving sensors since all pins are routed outside:
+- Sensors: Currently all SDI slave boards are technically capable of driving sensors since all pins are routed outside:
 	- Watering could depend on the wetness of the soil
 	- Measure the water level of the pump tank to send an alert to refill
 - Find an alternative to Atmel Studio for installing the bootloader

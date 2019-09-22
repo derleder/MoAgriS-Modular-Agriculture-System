@@ -197,28 +197,28 @@
 <vertex x="12.31" y="15.241"/>
 </polygon>
 <polygon width="0.127" layer="30">
-<vertex x="75.441" y="33.307"/>
-<vertex x="92.796" y="33.307"/>
-<vertex x="92.796" y="27.09"/>
-<vertex x="75.441" y="27.09"/>
+<vertex x="79.641" y="32.007"/>
+<vertex x="92.196" y="32.007"/>
+<vertex x="92.196" y="27.99"/>
+<vertex x="79.641" y="27.99"/>
 </polygon>
 <polygon width="0.127" layer="41">
-<vertex x="92.759" y="33.307"/>
-<vertex x="75.404" y="33.307"/>
-<vertex x="75.404" y="27.09"/>
-<vertex x="92.759" y="27.09"/>
+<vertex x="92.159" y="32.007"/>
+<vertex x="79.604" y="32.007"/>
+<vertex x="79.604" y="27.99"/>
+<vertex x="92.159" y="27.99"/>
 </polygon>
 <polygon width="0.127" layer="29">
-<vertex x="92.759" y="33.307"/>
-<vertex x="75.404" y="33.307"/>
-<vertex x="75.404" y="27.09"/>
-<vertex x="92.759" y="27.09"/>
+<vertex x="92.159" y="32.007"/>
+<vertex x="79.604" y="32.007"/>
+<vertex x="79.604" y="27.99"/>
+<vertex x="92.159" y="27.99"/>
 </polygon>
 <polygon width="0.127" layer="42">
-<vertex x="92.759" y="27.093"/>
-<vertex x="75.404" y="27.093"/>
-<vertex x="75.404" y="33.31"/>
-<vertex x="92.759" y="33.31"/>
+<vertex x="92.159" y="27.993"/>
+<vertex x="79.604" y="27.993"/>
+<vertex x="79.604" y="32.01"/>
+<vertex x="92.159" y="32.01"/>
 </polygon>
 </plain>
 <libraries>
