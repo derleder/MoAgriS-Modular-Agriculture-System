@@ -56,3 +56,11 @@ eagle.epf
 *.lck
 
 # End of https://www.gitignore.io/api/eagle
+
+PCB/gerber/
+PCB/notes/personal/
+
+
+
+
+

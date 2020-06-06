@@ -62,7 +62,11 @@ void loop(){
     
     mySDI12.sendCommand(myCommand);
     delay(100);                     // wait a while for a response
-    if(mySDI12.available()){
+    if (myCommand[0] == '?' || (myCommand[0] >= 'A' && myCommand[0] <= 'Z')) {
+      //no answer expected
+      Serial.print("ACK\r\n");
+    }
+    else if(mySDI12.available()){
       while(mySDI12.available()){    // write the response to the screen
         char sdiChar=mySDI12.read();
         if(sdiChar!=127){ //remove marking if present

@@ -16,7 +16,7 @@ That's it pretty much. You should be able to send commands to the individual mod
 
 
 ## Development
-Thanks to [Mattairtechs ArduinoCore-samd](https://github.com/mattairtech/ArduinoCore-samd) firmware development is quite easy. The setup is described [here](https://github.com/mattairtech/ArduinoCore-samd#installation) (two parts!). The flash size of the SAMD11 is quite small to fit in all the firmware but it is possible if you turn off as many functions as possible in the config.h (Windows: C:\Users\User\AppData\Local\Arduino15\packages\MattairTech_Arduino\hardware\samd\1.6.18-beta-b1\config.h). My config can be found in [Firmware/config.h](./Firmware/config.h). 
+Thanks to [Mattairtechs ArduinoCore-samd](https://github.com/mattairtech/ArduinoCore-samd) firmware development is quite easy. The setup is described [here](https://github.com/mattairtech/ArduinoCore-samd#installation) (two parts!). The flash size of the SAMD11 is quite small to fit in all the firmware but it is possible if you turn off as many functions as possible in the config.h (Windows: C:\Users\User\AppData\Local\Arduino15\packages\MattairTech_Arduino\hardware\samd\1.6.18-beta-b1\config.h). My config can be found in [Firmware/config.h](./Firmware/config.h). You will save additional flash space by setting serial config under tools to "no_uart_one_wire_one_spi".
 
 You also need to install [Arduino-SDI-12](https://github.com/EnviroDIY/Arduino-SDI-12/releases/tag/v1.1.0) and add it to the Arduino IDE for the <SDI12.h> include. Please use v1.1.0 since newer ones do not seem to work with the SAMD11.
 
@@ -28,7 +28,7 @@ The SDI protocol consists of commands from the master and answers from the senso
 ### Addressing
 The modules are addressed by a 4 character lower case hex string which represents two bytes of an SDI address. It is created during bootup in the module by xoring the 3 serial number registers of the SAMD11. Since there is no EEPROM on the controller this seems to be the best solution for getting almost unique addresses. When you install the firmware you should set up a one master one slave system to get the modules address by '?I!' and write it somewhere like the left out rectangle on the module.
 
-Besides addressing a single module you can address multiple ones with a single command. That way you won't receive an answer though. The wildcard character '?' will address all modules. If an single upper case letter is used you can address groups. The default group is 'N' as in None. You can set the group of a module by sending 'abcdGL!' ('abcd' = address, 'G' = set group, 'L' = Group L). Remember there is no EEPROM so the group will be lost once the module reboots. Either write a setup routine or set SDIGROUPDEFAULT in the firmware code to keep the group after booting.
+Besides addressing a single module you can address multiple ones with a single command. That way you won't receive any answers from the modules though - the master will always send "ACK". The wildcard character '?' will address all modules. If an single upper case letter is used you can address groups. The default group is 'N' as in None. You can set the group of a module by sending 'abcdGL!' ('abcd' = address, 'G' = set group, 'L' = Group L). Remember there is no EEPROM so the group will be lost once the module reboots. Either write a setup routine or set SDIGROUPDEFAULT in the firmware code to keep the group after booting.
 
 ### Instructions
 Commands should be finished with \n and responses are finished by \r\n by the module itself.

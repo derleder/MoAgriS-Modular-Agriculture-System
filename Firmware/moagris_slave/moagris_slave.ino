@@ -4,15 +4,18 @@
    -Avoided String type since it uses way too much flash
 */
 
-#define FIRMWAREVERSION "00.00.03"
+#define FIRMWAREVERSION "00.00.04"
 
 //recommended value is 20000UL and do heartbeat every 15000ms
 #define HEARTBEATINTERVAL 150543560UL //long heartbeat for development
 
-//defines the timeout this sensor waits for another sensors response
+//default time this sensor returns to safeState when actionPin has been activated by a SDI*SAFE command
+#define SAFESTATEINTERVAL 10000UL //long heartbeat for development
+
+//timeout this sensor waits for another sensors response
 #define SDIWAITTIMEOUT 1000UL
 
-//defines the timeout this sensor waits until the cmd finishes by '!'
+//timeout this sensor waits until the cmd finishes by '!'
 #define SDICMDTIMEOUT 1000UL
 
 #define SDICMDIDENTIFICATION 'I'
@@ -25,6 +28,7 @@
 #define SDICMDSTATUSLED 'S'
 #define SDICMDPOWERLED 'L'
 #define SDICMDPUMP 'P'
+#define SDICMDPUMPSAFE 'W'
 #define SDICMDFAN 'F'
 
 //Groups must be upper case
@@ -72,10 +76,14 @@ static bool sdiWaitUntilFinish = false;
 static unsigned long sdiWaitTimeoutMillis = 0; //millis for timer to timeout waiting for other sensor to finish command
 static unsigned long sdiCmdErrorTimeoutMillis = 0; //millis for timer to timeout if sensor waits too long for an finished cmd ('!')
 static unsigned long hbPreviousMillis = millis(); //milliSeconds for heartbeat
-static unsigned long hbInterval = HEARTBEATINTERVAL; //Interval to declare heartbeat missing; save as variable to set higher via sdi //TODO do so
+static unsigned long ssStartMillis = millis(); //milliSeconds for SDI*SAFE cmd
+static unsigned long hbInterval = HEARTBEATINTERVAL; //Interval to declare heartbeat missing; hold in ram to make it mutable via sdi 
+static unsigned long ssInterval = SAFESTATEINTERVAL; //Interval to return to safeState when ActionPin has been activated; hold in ram to make it mutable via sdi 
 static bool hbAvailable = true; //heartbeatflag
+static bool ssSafeCmdActivated = false; //set true when a SDI*SAFE cmd has been sent
 static char sdiGroup = SDIGROUPDEFAULT;
 static byte sdiCntCharsReceived=0;
+
 
 
 //helper function for hex codes
@@ -102,9 +110,11 @@ void finishResponse(char* start) {
   strncpy(start, RESPEND, 3);
 }
 
+//resets the sensor to a save state (shut down power LED/pump/fan)
 void setSafeState() {
   digitalWrite(ACTION_PIN, LOW);
   analogWrite(ACTION_PIN, 0);
+  ssSafeCmdActivated=false;
   digitalWrite(LED_PIN, HIGH);
 }
 
@@ -248,6 +258,15 @@ void loop() {
                 strcpy(uResponse.sdiResponse.responseContent, "ACK");
                 finishOffset = 3;
                 break;
+              case SDICMDPUMPSAFE: // activates ACTION_PIN (1) and reads time in s to return to safeState
+                ssInterval = (*commandReadPtr++ - '0') * 1000 + (*commandReadPtr++ - '0') * 100 + (*commandReadPtr++ - '0') * 10 + (*commandReadPtr++ - '0'); //command must have 4 chars of value (leading 0s if necessary)
+                ssInterval*=1000;
+                ssSafeCmdActivated=true;
+                ssStartMillis = millis();
+                digitalWrite(ACTION_PIN, HIGH);
+                strcpy(uResponse.sdiResponse.responseContent, "ACK");
+                finishOffset = 3;
+                break;
               case SDICMDSETHEARTBEATINTERVALL: //set new heartbeat intervall in s
                 hbInterval = (*commandReadPtr++ - '0') * 1000 + (*commandReadPtr++ - '0') * 100 + (*commandReadPtr++ - '0') * 10 + (*commandReadPtr++ - '0'); //command must have 4 chars of value (leading 0s if necessary)
                 hbInterval*=1000;
@@ -296,6 +315,11 @@ void loop() {
 
       } 
     }
+  }
+
+  //when SDI*SAFE cmd is active and time passed return to safeState
+  if (ssSafeCmdActivated && (millis() - ssStartMillis >= ssInterval)) { 
+    setSafeState();
   }
 
   //Heartbeat - return to savestate if heart didn't beat in the last hbInterval
