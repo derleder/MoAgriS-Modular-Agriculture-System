@@ -111,6 +111,7 @@ More things could be added such as
 - Modules don't answer after hours of no use
 - Sometimes there's a voltage on the BUS of 0.1-2.5V
 - Sometimes the BUS only works when a logic analyzer is attached to GND/BUS
+- Sometimes it helps to connect the programmers reset pin when you need to reprogramm the bootloader
 
 
 ## More
