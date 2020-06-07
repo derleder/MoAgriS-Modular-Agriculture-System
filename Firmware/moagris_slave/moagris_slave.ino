@@ -139,7 +139,11 @@ void setup() {
   //2 byte of 4 xored serial number words
   uSensorAddress.w = ((pgm_read_word(0x0080A00C) ^ pgm_read_word(0x0080A040)) ^ pgm_read_word(0x0080A044)) ^ pgm_read_word(0x0080A048);
   //while(!Serial);
-  Serial.println("Opening SDI-12 bus slave...");
+  Serial.print("Opening SDI-12 bus slave ");
+  Serial.print(btoc(uSensorAddress.c[0] & 0xf));
+  Serial.print(btoc((uSensorAddress.c[0] & 0xf0) >> 4));
+  Serial.print(btoc(uSensorAddress.c[1] & 0xf));
+  Serial.println(btoc((uSensorAddress.c[1] & 0xf0) >> 4));
   slaveSDI12.begin();
   delay(500);
   slaveSDI12.forceListen();  // sets SDIPIN as input to prepare for incoming message
