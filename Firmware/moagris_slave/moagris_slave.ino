@@ -81,6 +81,7 @@ static unsigned long hbInterval = HEARTBEATINTERVAL; //Interval to declare heart
 static unsigned long ssInterval = SAFESTATEINTERVAL; //Interval to return to safeState when ActionPin has been activated; hold in ram to make it mutable via sdi 
 static bool hbAvailable = true; //heartbeatflag
 static bool ssSafeCmdActivated = false; //set true when a SDI*SAFE cmd has been sent
+static bool actionPinDigitalMode= true; //mixing analog and digital mode might be a problem - fixing it that way
 static char sdiGroup = SDIGROUPDEFAULT;
 static byte sdiCntCharsReceived=0;
 
@@ -112,8 +113,11 @@ void finishResponse(char* start) {
 
 //resets the sensor to a save state (shut down power LED/pump/fan)
 void setSafeState() {
-  digitalWrite(ACTION_PIN, LOW);
-  analogWrite(ACTION_PIN, 0);
+  if(actionPinDigitalMode){
+    digitalWrite(ACTION_PIN, LOW);
+  }else{
+    analogWrite(ACTION_PIN, 0);
+  }
   ssSafeCmdActivated=false;
   digitalWrite(LED_PIN, HIGH);
 }
@@ -248,17 +252,16 @@ void loop() {
                 break;
               case SDICMDFAN:  // set fan to value (char)
               case SDICMDPOWERLED: // set powerled to value (char)
-
                 //chars 2..4 are acii coded values between 000..255 (leading 0s); not using atoi since it uses 500bytes
                 intensity = 0xff & ((byte)(*commandReadPtr++ - '0') * 100 + (byte)(*commandReadPtr++ - '0') * 10 + (byte)(*commandReadPtr++ - '0')); 
-
                 analogWrite(ACTION_PIN, intensity); //uses ~550 Bytes!
-
+                actionPinDigitalMode=false;
                 strcpy(uResponse.sdiResponse.responseContent, "ACK");
                 finishOffset = 3;
                 break;
               case SDICMDPUMP: // set pump to value (char)
                 digitalWrite(ACTION_PIN, ctob(*commandReadPtr));
+                actionPinDigitalMode=true;
                 strcpy(uResponse.sdiResponse.responseContent, "ACK");
                 finishOffset = 3;
                 break;
@@ -268,6 +271,7 @@ void loop() {
                 ssSafeCmdActivated=true;
                 ssStartMillis = millis();
                 digitalWrite(ACTION_PIN, HIGH);
+                actionPinDigitalMode=true;
                 strcpy(uResponse.sdiResponse.responseContent, "ACK");
                 finishOffset = 3;
                 break;
