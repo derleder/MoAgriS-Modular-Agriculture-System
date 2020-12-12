@@ -62,7 +62,7 @@ void loop(){
     
     mySDI12.sendCommand(myCommand);
     delay(100);                     // wait a while for a response
-    if (myCommand[0] == '?' || (myCommand[0] >= 'A' && myCommand[0] <= 'Z')) {
+    if (myCommand[1] != 'I' && (myCommand[0] == '?' || (myCommand[0] >= 'A' && myCommand[0] <= 'Z'))) {
       //no answer expected
       Serial.print("ACK\r\n");
     }

@@ -14,6 +14,10 @@ Now that the PCBs are fully working it's time to clamp them on the rods. Plug th
 
 That's it pretty much. You should be able to send commands to the individual modules now. There's a node-red solution in development to automate it further.
 
+## Alternative Uploading
+Since the USB ports are no real benefit they can be left out except for the master board which uses it for serial communication. To achieve that choose [NO_BOOTLOADER in the Arduino Tools Bootloader size menu](https://github.com/mattairtech/ArduinoCore-samd#bootloader-size-menu). After you created/exported the binaries you can use another programmer like Atmel Studio to program directly via the Segger J-Link to the very start of the flash (no address needs to be specified).
+
+The binaries can also be found directly in the corresponding folders under Firmware.
 
 ## Development
 Thanks to [Mattairtechs ArduinoCore-samd](https://github.com/mattairtech/ArduinoCore-samd) firmware development is quite easy. The setup is described [here](https://github.com/mattairtech/ArduinoCore-samd#installation) (two parts!). The flash size of the SAMD11 is quite small to fit in all the firmware but it is possible if you turn off as many functions as possible in the config.h (Windows: C:\Users\User\AppData\Local\Arduino15\packages\MattairTech_Arduino\hardware\samd\1.6.18-beta-b1\config.h). My config can be found in [Firmware/config.h](./Firmware/config.h). You will save additional flash space by setting serial config under tools to "no_uart_one_wire_one_spi".
